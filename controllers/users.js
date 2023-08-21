@@ -18,7 +18,7 @@ module.exports.getUsers = (req, res) => {
     .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 module.exports.getUserById = (req, res) => {
-  if (req.params.userId.length === 24) {
+  if (error.name === 'CastError') {
     User.findById(req.params.userId)
       .then((user) => {
         if (!user) {
@@ -27,7 +27,7 @@ module.exports.getUserById = (req, res) => {
         }
         res.send(user);
       })
-      .catch(() => res.status(404).send({ message: 'Пользователь по указанному _id не найден.' }));
+      .catch(() => res.status(500).send({ message: 'Пользователь по указанному _id не найден.' }));
   } else {
     res.status(400).send({ message: 'Некорректный _id' });
   }
