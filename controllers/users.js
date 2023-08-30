@@ -35,20 +35,18 @@ module.exports.getUserById = (req, res) => {
 };
 module.exports.editUserData = (req, res) => {
   const { name, about } = req.body;
-  if (req.user._id) {
-    User.findByIdAndUpdate(req.user._id, { name, about }, { new: 'true', runValidators: true })
-      .orFail()
-      .then((user) => res.send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          res.status(400).send({ message: err.message });
-        } else {
-          res.status(500).send({ message: 'Пользователь по указанному _id не найден.' });
-        }
-      });
-  } else {
-    res.status(500).send({ message: 'На сервере произошла ошибка' });
-  }
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: 'true', runValidators: true })
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err.message });
+      } else if (err.name === 'DocumentNotFoundError') {
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+      } else {
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
+      }
+    });
 };
 module.exports.editUserAvatar = (req, res) => {
   if (req.user._id) {
@@ -58,7 +56,7 @@ module.exports.editUserAvatar = (req, res) => {
         if (err.name === 'ValidationError') {
           res.status(400).send({ message: err.message });
         } else {
-          res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+          res.status(500).send({ message: 'Пользователь по указанному _id не найден.' });
         }
       });
   } else {

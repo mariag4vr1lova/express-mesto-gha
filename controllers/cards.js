@@ -34,7 +34,7 @@ module.exports.deleteCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
       } else if (err.name === 'DocumentNotFoundError') {
-        res.status(400).send({ message: 'Некорректный _id карточки.' });
+        res.status(404).send({ message: 'Некорректный _id карточки.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -55,7 +55,7 @@ module.exports.likeCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
       } else if (err.name === 'DocumentNotFoundError') {
-        res.status(400).send({ message: 'Некорректный _id карточки.' });
+        res.status(404).send({ message: 'Некорректный _id карточки.' });
       } else {
         res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
@@ -76,7 +76,7 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
       } else if (err.name === 'DocumentNotFoundError') {
-        res.status(400).send({ message: 'Некорректный _id карточки.' });
+        res.status(404).send({ message: 'Некорректный _id карточки.' });
       }
     });
 };
