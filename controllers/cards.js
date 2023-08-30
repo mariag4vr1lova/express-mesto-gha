@@ -76,7 +76,7 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточка с указанным _id не найдена' });
       } else if (err.name === 'DocumentNotFoundError') {
-        res.status(404).send({ message: 'Некорректный _id карточки.' });
+        res.status(500).send({ message: 'Некорректный _id карточки.' });
       }
     });
 };
