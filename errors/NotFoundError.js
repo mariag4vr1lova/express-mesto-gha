@@ -5,4 +5,4 @@ module.exports = class NotFoundError extends Error {
     super(message);
     this.statuseCode = HTTP_STATUS_NOT_FOUND;
   }
-}
+};

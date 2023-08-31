@@ -1,8 +1,8 @@
-const {HTTP_STATUS_OK, HTTP_STATUS_CREATED} = require('http2').constants;
+const { HTTP_STATUS_OK, HTTP_STATUS_CREATED } = require('http2').constants;
+const mongoose = require('mongoose');
 const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const mongoose = require('mongoose');
 
 module.exports.addUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
@@ -29,9 +29,9 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        next(new BadRequestError ('Некорректный _id.'));
+        next(new BadRequestError('Некорректный _id.'));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError ('Пользователь по указанному _id не найден.'));
+        next(new NotFoundError('Пользователь по указанному _id не найден.'));
       } else {
         next(err);
       }
@@ -46,7 +46,7 @@ module.exports.editUserData = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError ('Пользователь по указанному _id не найден.'));
+        next(new NotFoundError('Пользователь по указанному _id не найден.'));
       } else {
         next(err);
       }
@@ -59,8 +59,8 @@ module.exports.editUserAvatar = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
-      } else if (err instanceof mongoose.Error.DocumentNotFoundError){
-        next(new NotFoundError ('Пользователь по указанному _id не найден.'));
+      } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
+        next(new NotFoundError('Пользователь по указанному _id не найден.'));
       } else {
         next(err);
       }

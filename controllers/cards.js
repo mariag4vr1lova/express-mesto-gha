@@ -1,8 +1,8 @@
+const { HTTP_STATUS_OK, HTTP_STATUS_CREATED } = require('http2').constants;
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const mongoose = require('mongoose')
-const {HTTP_STATUS_OK, HTTP_STATUS_CREATED} = require('http2').constants;
 
 module.exports.addCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -13,9 +13,9 @@ module.exports.addCard = (req, res, next) => {
         .populate('owner')
         .then((data) => res.status(HTTP_STATUS_CREATED).send(data))
         .catch((err) => {
-          if (err instanceof mongoose.Error.DocumentNotFoundError){
-            next(new NotFoundError ('Карточка с указанным _id не найдена.'))
-          } else{
+          if (err instanceof mongoose.Error.DocumentNotFoundError) {
+            next(new NotFoundError('Карточка с указанным _id не найдена.'));
+          } else {
             next(err);
           }
         });
@@ -35,7 +35,7 @@ module.exports.getCards = (req, res, next) => {
     .then((cards) => res.status(HTTP_STATUS_OK).send(cards))
     .catch(next);
 };
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail()
     .then(() => {
@@ -56,7 +56,7 @@ module.exports.likeCard = (req, res, next) => {
     .orFail()
     .populate(['owner', 'likes'])
     .then((card) => {
-        res.status(HTTP_STATUS_OK).send(card);
+      res.status(HTTP_STATUS_OK).send(card);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
@@ -74,7 +74,7 @@ module.exports.dislikeCard = (req, res, next) => {
     .populate(['owner', 'likes'])
     .then((card) => {
       res.status(HTTP_STATUS_OK).send(card);
-  })
+    })
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
         next(new NotFoundError('Карточка с указанным _id не найдена'));
