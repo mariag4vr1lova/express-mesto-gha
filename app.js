@@ -19,6 +19,11 @@ app.use((req, res, next) => {
   };
   next();
 });
+app.use('/', require('./routes/index'));
+
+app.use('*', (req, res) => {
+  res.status(404).send({ message: 'страница не найдена.' });
+});
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res.status(statusCode).send({
@@ -28,7 +33,4 @@ app.use((err, req, res, next) => {
   });
   next();
 });
-app.use('/users', require('./routes/users'));
-app.use('/cards', require('./routes/cards'));
-
 app.listen(PORT);
