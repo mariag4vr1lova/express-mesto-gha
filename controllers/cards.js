@@ -36,8 +36,10 @@ module.exports.getCards = (req, res, next) => {
     .then((cards) => res.status(HTTP_STATUS_OK).send(cards))
     .catch(next);
 };
+
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
+    .orFail()
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
         throw new ForbiddenError('Карточка другого пользователя');
@@ -58,13 +60,14 @@ module.exports.deleteCard = (req, res, next) => {
         });
     })
     .catch((err) => {
-      if (err.name === 'TypeError') {
+      if (err instanceof mongoose.Error.DocumentNotFoundError) {
         next(new NotFoundError(`Карточка с _id: ${req.params.cardId} не найдена.`));
       } else {
         next(err);
       }
     });
 };
+
 module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .orFail()
@@ -74,14 +77,15 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Карточка с указанным _id не найдена'));
+        next(new NotFoundError(`Карточка с _id: ${req.params.cardId} не найдена.`));
       } else if (err instanceof mongoose.Error.CastError) {
-        next(new BadRequestError('Некорректный _id карточки.'));
+        next(new BadRequestError(`Некорректный _id карточки: ${req.params.cardId}`));
       } else {
         next(err);
       }
     });
 };
+
 module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
     .orFail()
@@ -91,9 +95,9 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Карточка с указанным _id не найдена'));
+        next(new NotFoundError(`Карточка с _id: ${req.params.cardId} не найдена.`));
       } else if (err instanceof mongoose.Error.CastError) {
-        next(new BadRequestError('Некорректный _id карточки.'));
+        next(new BadRequestError(`Некорректный _id карточки: ${req.params.cardId}`));
       } else {
         next(err);
       }
