@@ -51,19 +51,20 @@ module.exports.getUserById = (req, res, next) => {
 };
 module.exports.editUserData = (req, res, next) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: 'true', runValidators: true })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .orFail()
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Пользователь по указанному _id не найден.'));
+        next(new NotFoundError(`Пользователь по данному _id: ${req.user._id} не найден.`));
       } else {
         next(err);
       }
     });
 };
+
 module.exports.editUserAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar }, { new: 'true', runValidators: true })
     .orFail()
@@ -72,7 +73,7 @@ module.exports.editUserAvatar = (req, res, next) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequestError(err.message));
       } else if (err instanceof mongoose.Error.DocumentNotFoundError) {
-        next(new NotFoundError('Пользователь по указанному _id не найден.'));
+        next(new NotFoundError(`Пользователь по данному _id: ${req.user._id} не найден.`));
       } else {
         next(err);
       }
