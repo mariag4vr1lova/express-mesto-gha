@@ -5,8 +5,8 @@ const cardSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Поле "name" должно быть заполнено'],
-    minlength: [2, 'Минимальная длина поля "name" - 2'],
-    maxlength: [30, 'Максимальная длина поля "name" - 30'],
+    minlength: [2, 'Минимальная длина поля "name" 2 символа'],
+    maxlength: [30, 'Максимальная длина поля "name" 30 символов'],
   },
   link: {
     type: String,
@@ -15,7 +15,7 @@ const cardSchema = new mongoose.Schema({
       validator(v) {
         return urlRegex.test(v);
       },
-      message: 'Введите URL',
+      message: 'Не верный URL',
     },
   },
   owner: {
@@ -27,6 +27,7 @@ const cardSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user',
+      default: [],
     },
   ],
   createdAt: {
