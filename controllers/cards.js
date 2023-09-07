@@ -1,4 +1,4 @@
-const { HTTP_STATUS_OK, HTTP_STATUS_CREATED } = require('http2').constants;
+const { HTTP_STATUS_OK } = require('http2').constants;
 const mongoose = require('mongoose');
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
